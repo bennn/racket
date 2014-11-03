@@ -21,6 +21,7 @@
 
 #include "schpriv.h"
 #include "schmach.h"
+#include "schchap.h"
 #include "future.h"
 
 #ifdef MZ_USE_JIT
@@ -1040,6 +1041,12 @@ static int generate_apply_proxy(mz_jit_state *jitter, int setter)
   }
   jit_addi_p(JIT_RUNSTACK, JIT_RUNSTACK, WORDS_TO_BYTES(2)); /* don't need saved anymore */
   JIT_UPDATE_THREAD_RSPTR();
+
+#if COUNT_CHAPS
+  jit_ldi_l(JIT_R1, &vec_apps);
+  jit_addi_l(JIT_R1, JIT_R1, 1);
+  jit_sti_l(&vec_apps, JIT_R1);
+#endif
 
   return 1;
 }

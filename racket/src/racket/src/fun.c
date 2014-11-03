@@ -32,6 +32,7 @@
 #include "schpriv.h"
 #include "schexpobs.h"
 #include "schmach.h"
+#include "schchap.h"
 
 /* The implementations of the time primitives, such as
    `current-seconds', vary a lot from platform to platform. */
@@ -130,6 +131,12 @@ THREAD_LOCAL_DECL(static int scheme_prompt_capture_count);
 
 #ifdef WINDOWS_GET_PROCESS_TIMES
 SHARED_OK volatile uintptr_t scheme_process_children_msecs;
+#endif
+
+#if COUNT_CHAPS
+int proc_makes, proc_apps;
+int vec_makes, vec_apps;
+int struct_makes, struct_apps;
 #endif
 
 /* locals */
@@ -3388,6 +3395,10 @@ static Scheme_Object *do_chaperone_procedure(const char *name, const char *whati
   Scheme_Object *val = argv[0], *orig, *naya, *r, *app_mark;
   Scheme_Hash_Tree *props;
 
+#if COUNT_CHAPS
+  proc_makes++;
+#endif
+
   if (SCHEME_CHAPERONEP(val))
     val = SCHEME_CHAPERONE_VAL(val);
 
@@ -3547,6 +3558,10 @@ Scheme_Object *scheme_apply_chaperone(Scheme_Object *o, int argc, Scheme_Object 
   int c, i, need_restore = 0;
   int need_pop_mark;
   Scheme_Cont_Frame_Data cframe;
+
+#if COUNT_CHAPS
+  proc_apps++;
+#endif
 
   if (argv == MZ_RUNSTACK) {
     /* Pushing onto the runstack ensures that `(vector-ref px->redirects 0)' won't

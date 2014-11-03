@@ -64,63 +64,40 @@
 (define cost-breakdown-file
   (string-append output-file-prefix "cost-breakdown.txt"))
 
+;; ffi gives contract counts
+(require (only-in ffi/unsafe get-ffi-obj _int)
+         (only-in racket/string string-join)
+)
 (define (print-breakdown correlated)
   (match-define (contract-profile
                  total-time live-contract-samples all-blames regular-profile)
     correlated)
-
+  ;; counts of num.contracts & num. calls
+  (define num-contracts      (get-ffi-obj 'proc_makes #f _int))
+  (define num-contract-calls (get-ffi-obj 'proc_apps  #f _int))
+  ;; total running time + time spent in contracts
   (define total-contract-time (samples-time live-contract-samples))
   (define contract-ratio (/ total-contract-time (max total-time 1) 1.0))
-  (printf "Running time is ~a% contracts\n"
-          (~r (* 100 contract-ratio) #:precision 2))
-  (printf "~a/~a ms\n\n"
-          (~r total-contract-time #:precision 0)
-          total-time)
-
-  (define shorten-source
-    (make-srcloc-shortener all-blames blame-source))
-  (define (print-contract/loc c)
-    (printf "~a @ ~a\n" (blame-contract c) (shorten-source c)))
-
-  (displayln "\nBY CONTRACT\n")
+  (define other-time (- total-time total-contract-time))
+  ;; total time spent in each contract
   (define samples-by-contract
     (sort (group-by (lambda (x) (blame-contract (car x)))
                     live-contract-samples)
           > #:key length #:cache-keys? #t))
-  (for ([c (in-list samples-by-contract)])
-    (define representative (caar c))
-    (print-contract/loc representative)
-    (printf "  ~a ms\n\n" (samples-time c)))
+  (printf (string-join (map (lambda (x) (format "~a\t~a" (car x) (cdr x)))
+                            (append
+                             (list
+                              (cons "Num. Contracts" num-contracts)
+                              (cons "Num. Calls"     num-contract-calls)
+                              (cons "Total Runtime"  total-time)
+                              (cons "Contract Runtime" (round total-contract-time))
+                              (cons "Other Runtime" (round other-time)))
+                             (map (lambda (c) (cons (blame-contract (caar c)) (round (samples-time c))))
+                                  samples-by-contract)))
+                            
+                       "\n"))
 
-  (displayln "\nBY CALLEE\n")
-  (for ([g (in-list samples-by-contract)])
-    (define representative (caar g))
-    (print-contract/loc representative)
-    (for ([x (sort
-              (group-by (lambda (x)
-                          (blame-value (car x))) ; callee source, maybe
-                        g)
-              > #:key length)])
-      (printf "  ~a\n  ~a ms\n"
-              (blame-value (caar x))
-              (samples-time x)))
-    (newline))
-
-  (define samples-by-contract-by-caller
-    (for/list ([g (in-list samples-by-contract)])
-      (sort (group-by cddr ; pruned stack trace
-                      (map sample-prune-stack-trace g))
-            > #:key length)))
-
-  (displayln "\nBY CALLER\n")
-  (for* ([g samples-by-contract-by-caller]
-         [c g])
-    (define representative (car c))
-    (print-contract/loc (car representative))
-    (for ([frame (in-list (cddr representative))])
-      (printf "  ~a @ ~a\n" (car frame) (cdr frame)))
-    (printf "  ~a ms\n" (samples-time c))
-    (newline)))
+)
 
 ;; Unrolls the stack until it hits a function on the negative side of the
 ;; contract boundary (based on module location info).

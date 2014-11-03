@@ -21,6 +21,7 @@
 
 #include "schpriv.h"
 #include "schmach.h"
+#include "schchap.h"
 
 #define PROP_USE_HT_COUNT 5
 
@@ -1107,6 +1108,10 @@ static Scheme_Object *do_chaperone_prop_accessor(const char *who, Scheme_Object 
       Scheme_Object *v;
       Scheme_Hash_Tree *ht;
 
+#if COUNT_CHAPS
+      struct_apps++;
+#endif
+
       if (px->props) {
         v = scheme_hash_tree_get(px->props, prop);
         if (v)
@@ -2079,6 +2084,10 @@ static Scheme_Object *chaperone_struct_ref(const char *who, Scheme_Object *prim,
     } else {
       Scheme_Chaperone *px = (Scheme_Chaperone *)o;
       Scheme_Object *a[2], *red, *orig;
+
+#if COUNT_CHAPS
+      struct_apps++;
+#endif
 
       if (SCHEME_VECTORP(px->redirects)
           && !(SCHEME_VEC_SIZE(px->redirects) & 1)
@@ -5803,6 +5812,9 @@ static Scheme_Object *do_chaperone_struct(const char *name, int is_impersonator,
   int empty_si_chaperone = 0, *empty_redirects = NULL, has_redirect = 0;
 
   if (argc == 1) return argv[0];
+#if COUNT_CHAPS
+  struct_makes++;
+#endif
 
   if (SCHEME_CHAPERONEP(val)) {
     props = ((Scheme_Chaperone *)val)->props;

@@ -352,7 +352,7 @@ file.@LTO@: $(COMMON_HEADERS) \
         $(srcdir)/stypes.h
 fun.@LTO@: $(COMMON_HEADERS) \
         $(srcdir)/stypes.h $(srcdir)/mzmark_fun.inc $(srcdir)/schmap.inc \
-				$(srcdir)/future.h
+				$(srcdir)/future.h $(srcdir)/schchap.h
 future.@LTO@: $(COMMON_HEADERS) $(srcdir)/future.h $(SCONFIG) \
         $(srcdir)/stypes.h $(srcdir)/mzmark_future.inc \
         $(srcdir)/jit_ts_future_glue.c $(srcdir)/jit_ts_runtime_glue.c $(srcdir)/jit_ts_protos.h
@@ -362,7 +362,7 @@ jit.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS)  $(srcdir)/mzmark_jit.inc
 jitalloc.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS)
 jitarith.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS)
 jitcall.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS)
-jitcommon.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS)
+jitcommon.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS) $(srcdir)/schchap.h
 jitinline.@LTO@: $(COMMON_HEADERS) $(JIT_HEADERS)
 jitprep.@LTO@: $(COMMON_HEADERS) \
         $(srcdir)/stypes.h
@@ -421,7 +421,7 @@ string.@LTO@: $(COMMON_HEADERS) \
          $(srcdir)/stypes.h    $(srcdir)/schvers.h $(srcdir)/mzmark_string.inc $(srcdir)/strops.inc \
          $(srcdir)/schustr.inc
 struct.@LTO@: $(COMMON_HEADERS) \
-         $(srcdir)/stypes.h $(srcdir)/mzmark_struct.inc
+         $(srcdir)/stypes.h $(srcdir)/mzmark_struct.inc $(srcdir)/schchap.h
 syntax.@LTO@: $(COMMON_HEADERS) \
          $(srcdir)/stypes.h $(srcdir)/schfd.h $(srcdir)/mzmark_syntax.inc
 symbol.@LTO@: $(COMMON_HEADERS) \
@@ -431,6 +431,6 @@ sema.@LTO@: $(COMMON_HEADERS) \
 type.@LTO@: $(COMMON_HEADERS) \
         $(srcdir)/stypes.h $(srcdir)/mzmark_type.inc
 vector.@LTO@: $(COMMON_HEADERS) \
-         $(srcdir)/stypes.h
+         $(srcdir)/stypes.h $(srcdir)/schchap.h
 validate.@LTO@: $(COMMON_HEADERS) \
          $(srcdir)/stypes.h $(srcdir)/mzmark_validate.inc
