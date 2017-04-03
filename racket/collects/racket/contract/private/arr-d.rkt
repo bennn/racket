@@ -286,6 +286,7 @@
                              (base-->d-optional-keywords ->d-stct)
                              blame
                              neg-party))
+(log-n-wrappers "arr-d" val)
         (wrap-procedure
          val
          (make-keyword-procedure
@@ -412,6 +413,7 @@
                                                   dom-blame neg-party)
                                   (loop (cdr args)
                                         (cdr non-kwd-ctcs)))]))))))))
+impersonator-prop:unwrapped val
          impersonator-prop:contracted ->d-stct
          impersonator-prop:blame (blame-add-missing-party blame neg-party))))))
 

@@ -240,31 +240,34 @@
         (hash-set h
                   (pos-dom-proj k neg-party)
                   ((mk-pos-rng-proj k) v neg-party)))
-      (chaperone-or-impersonate-hash
-       val
-       (λ (h k)
-         (values (with-contract-continuation-mark
-                  blame+neg-party
-                  (neg-dom-proj k neg-party))
-                 (λ (h k v)
-                   (with-contract-continuation-mark
+      (begin
+        (log-n-wrappers "hash" val)
+        (chaperone-or-impersonate-hash
+         val
+         (λ (h k)
+           (values (with-contract-continuation-mark
                     blame+neg-party
-                    ((mk-pos-rng-proj k) v neg-party)))))
-       (λ (h k v)
-         (with-contract-continuation-mark
-          blame+neg-party
-          (values (neg-dom-proj k neg-party)
-                  ((mk-neg-rng-proj k) v neg-party))))
-       (λ (h k)
-         (with-contract-continuation-mark
-          blame+neg-party
-          (neg-dom-proj k neg-party)))
-       (λ (h k)
-         (with-contract-continuation-mark
-          blame+neg-party
-          (pos-dom-proj k neg-party)))
-       impersonator-prop:contracted ctc
-       impersonator-prop:blame blame)))
+                    (neg-dom-proj k neg-party))
+                   (λ (h k v)
+                     (with-contract-continuation-mark
+                      blame+neg-party
+                      ((mk-pos-rng-proj k) v neg-party)))))
+         (λ (h k v)
+           (with-contract-continuation-mark
+            blame+neg-party
+            (values (neg-dom-proj k neg-party)
+                    ((mk-neg-rng-proj k) v neg-party))))
+         (λ (h k)
+           (with-contract-continuation-mark
+            blame+neg-party
+            (neg-dom-proj k neg-party)))
+         (λ (h k)
+           (with-contract-continuation-mark
+            blame+neg-party
+            (pos-dom-proj k neg-party)))
+         impersonator-prop:unwrapped val
+         impersonator-prop:contracted ctc
+         impersonator-prop:blame blame))))
 
 (define-struct (chaperone-hash/c base-hash/c) ()
   #:omit-define-syntaxes

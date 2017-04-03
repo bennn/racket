@@ -171,10 +171,12 @@
         blame+neg-party
         (apply the-case-lam args)))))
   (define same-rngs (same-range-contracts rng-ctcs))
+(log-n-wrappers "case-arrow" f)
   (if same-rngs
       (wrapper
        f
        checker
+impersonator-prop:unwrapped f
        impersonator-prop:contracted ctc
        impersonator-prop:blame (blame-add-missing-party blame neg-party)
        impersonator-prop:application-mark
@@ -182,6 +184,7 @@
       (wrapper
        f
        checker
+impersonator-prop:unwrapped f
        impersonator-prop:contracted ctc
        impersonator-prop:blame (blame-add-missing-party blame neg-party))))
 

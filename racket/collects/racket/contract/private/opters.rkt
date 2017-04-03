@@ -473,10 +473,12 @@
                                 dom-arg)]
                               [args
                                (bad-number-of-arguments blame val args 1)])])
+(log-n-wrappers "opt-predicate/c" val)
                        (if (and (equal? (procedure-arity val) 1)
                                 (let-values ([(a b) (procedure-keywords val)])
                                   (null? b)))
                            (chaperone-procedure val exact-proc
+impersonator-prop:unwrapped val
                                                 impersonator-prop:contracted ctc
                                                 impersonator-prop:blame blame)
                            (if (procedure-arity-includes? val 1)
@@ -616,6 +618,7 @@
                                                   dom-vars ...)))))]
                                 [args
                                  (bad-number-of-arguments blame val args dom-len)])])
+(log-n-wrappers "opt-arrow" val)
              (if (and (procedure? val)
                       (equal? dom-len (procedure-arity val))
                       (let-values ([(a b) (procedure-keywords val)])
@@ -623,6 +626,7 @@
                  (chaperone-procedure val exact-proc
                                       impersonator-prop:application-mark 
                                       (cons opt->/c-cm-key cont-mark-value)
+impersonator-prop:unwrapped val
                                       impersonator-prop:contracted ctc
                                       impersonator-prop:blame blame)
                  (handle-non-exact-procedure val dom-len blame exact-proc ctc))))
@@ -691,12 +695,14 @@
          (define do-chap-stx
            #'(begin
                (check-procedure val #f dom-len 0 '() '() #|keywords|# blame #f)
+(log-n-wrappers "opt-arrow-any" val)
                (chaperone-procedure
                 val
                 (case-lambda
                   [(dom-arg ...)  (values next-dom ...)]
                   [args
                    (bad-number-of-arguments blame val args dom-len)])
+impersonator-prop:unwrapped val
                 impersonator-prop:contracted ctc
                 impersonator-prop:blame blame)))
          (if all-anys?
@@ -774,6 +780,7 @@
                                      [(null? (cdr kwds)) '()]
                                      [else (cons " " (loop (cdr kwds)))]))))))
     exact-proc)
+impersonator-prop:unwrapped val
    impersonator-prop:contracted ctc
    impersonator-prop:blame blame))
 

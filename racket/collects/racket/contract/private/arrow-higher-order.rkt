@@ -578,15 +578,18 @@
             (if chaperone? chaperone-procedure impersonate-procedure)))
       (cond
         [chap/imp-func
+(log-n-wrappers "arrow-higher-order" val)
          (if (or post? (not rngs))
              (chaperone-or-impersonate-procedure
               val
               chap/imp-func
+impersonator-prop:unwrapped val
               impersonator-prop:contracted ctc
               impersonator-prop:blame (blame-add-missing-party orig-blame neg-party))
              (chaperone-or-impersonate-procedure
               val
               chap/imp-func
+impersonator-prop:unwrapped val
               impersonator-prop:contracted ctc
               impersonator-prop:blame (blame-add-missing-party orig-blame neg-party)
               impersonator-prop:application-mark

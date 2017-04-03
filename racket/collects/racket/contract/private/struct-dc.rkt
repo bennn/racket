@@ -318,8 +318,11 @@
               (define (app* f v l)
                 (if (null? l)
                     v
-                    (apply f v (append l (list impersonator-prop:contracted ctc
-                                               impersonator-prop:blame (blame-add-missing-party blame neg-party))))))
+                    (begin
+                      (log-n-wrappers "struct/dc" v)
+                      (apply f v (append l (list impersonator-prop:unwrapped v
+                                                 impersonator-prop:contracted ctc
+                                                 impersonator-prop:blame (blame-add-missing-party blame neg-party)))))))
               (app* chaperone-struct
                     (app* impersonate-struct
                           v
@@ -1442,11 +1445,13 @@
                         (if (pred? #,(opt/info-val opt/info))
                             (begin
                               #,@s-fo-code
+(log-n-wrappers "opt-struct/dc" val)
                               (chaperone-struct
                                #,(opt/info-val opt/info)
                                #,@(reverse s-chap-code) ;; built the last backwards, so reverse it here
                                stronger-prop-desc
                                (vector free-var ...)
+impersonator-prop:unwrapped val
                                impersonator-prop:contracted #,(opt/info-contract opt/info)
                                impersonator-prop:blame #,(opt/info-blame opt/info)))
                             (struct/dc-error #,(opt/info-blame opt/info) #,(opt/info-val opt/info) 'struct-name)))))

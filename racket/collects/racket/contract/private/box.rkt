@@ -148,18 +148,21 @@
           [else
            (if (and (immutable? val) (not (chaperone? val)))
                (box-immutable (pos-elem-r-proj (unbox val) neg-party))
-               (chaperone/impersonate-box 
-                val
-                (λ (b v)
-                  (with-contract-continuation-mark
-                   blame+neg-party
-                   (pos-elem-r-proj v neg-party)))
-                (λ (b v)
-                  (with-contract-continuation-mark
-                   blame+neg-party
-                   (neg-elem-w-proj v neg-party)))
-                impersonator-prop:contracted ctc
-                impersonator-prop:blame (blame-add-missing-party blame neg-party)))])))))
+               (begin
+                 (log-n-wrappers "box" val)
+                 (chaperone/impersonate-box 
+                  val
+                  (λ (b v)
+                    (with-contract-continuation-mark
+                     blame+neg-party
+                     (pos-elem-r-proj v neg-party)))
+                  (λ (b v)
+                    (with-contract-continuation-mark
+                     blame+neg-party
+                     (neg-elem-w-proj v neg-party)))
+                  impersonator-prop:unwrapped val
+                  impersonator-prop:contracted ctc
+                  impersonator-prop:blame (blame-add-missing-party blame neg-party))))])))))
 
 (define-struct (chaperone-box/c base-box/c) ()
   #:property prop:custom-write custom-write-property-proc

@@ -911,6 +911,7 @@ evaluted left-to-right.)
          (λ (val neg-party)
            (define blame+neg-party (cons blame neg-party))
            (chk val #,method?)
+(log-n-wrappers "arr-i" val)
            (c-or-i-procedure
             val
             (let ([arg-checker
@@ -925,6 +926,7 @@ evaluted left-to-right.)
                  (with-contract-continuation-mark
                   blame+neg-party
                   (apply arg-checker args)))))
+impersonator-prop:unwrapped val
             impersonator-prop:contracted ctc
             impersonator-prop:blame (blame-add-missing-party blame neg-party)))))))
 

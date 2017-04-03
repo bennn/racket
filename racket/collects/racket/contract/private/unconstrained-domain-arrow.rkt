@@ -78,19 +78,22 @@
                (equal? desired-procedure-result-arity
                        (procedure-result-arity val)))
           val
-          (chaperone-or-impersonate-procedure
-           val
-           (apply make-wrapper-proc
-                  val
-                  blame+neg-party
-                  range-contracts
-                  blame-party-info
-                  neg-party
-                  projs)
-           impersonator-prop:contracted ctc
-           impersonator-prop:blame (blame-add-missing-party orig-blame neg-party)
-           impersonator-prop:application-mark
-           (cons tail-contract-key (list* neg-party blame-party-info range-contracts)))))))
+          (begin
+            (log-n-wrappers "unconstrained-domain->" val)
+            (chaperone-or-impersonate-procedure
+             val
+             (apply make-wrapper-proc
+                    val
+                    blame+neg-party
+                    range-contracts
+                    blame-party-info
+                    neg-party
+                    projs)
+             impersonator-prop:unwrapped val
+             impersonator-prop:contracted ctc
+             impersonator-prop:blame (blame-add-missing-party orig-blame neg-party)
+             impersonator-prop:application-mark
+             (cons tail-contract-key (list* neg-party blame-party-info range-contracts))))))))
 
 (define (unconstrained-domain->-name ud)
   (apply build-compound-type-name 'unconstrained-domain->
