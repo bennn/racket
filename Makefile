@@ -1,3 +1,9 @@
+icfp:
+	make in-place SRC_CATALOG="https://download.racket-lang.org/releases/6.10.1/catalog/"
+	./racket/bin/raco pkg update ../typed-racket/source-syntax/ ../typed-racket/typed-racket/ ../typed-racket/typed-racket-lib/ ../typed-racket/typed-racket-doc/ ../typed-racket/typed-racket-more/ ../typed-racket/typed-racket-compatibility/ ../typed-racket/typed-racket-test/
+	./racket/bin/raco pkg install ../require-typed-check
+
+
 # This makefile is meant to parse with both normal `make' and `nmake'
 # (on Windows). On Windows, prefix each target with `win32-'.
 
