@@ -1,6 +1,6 @@
 icfp:
 	make in-place SRC_CATALOG="https://download.racket-lang.org/releases/6.10.1/catalog/"
-	./racket/bin/raco pkg update ../typed-racket/source-syntax/ ../typed-racket/typed-racket/ ../typed-racket/typed-racket-lib/ ../typed-racket/typed-racket-doc/ ../typed-racket/typed-racket-more/ ../typed-racket/typed-racket-compatibility/ ../typed-racket/typed-racket-test/
+	./racket/bin/raco pkg update ../typed-racket/source-syntax/ ../typed-racket/typed-racket/ ../typed-racket/typed-racket-lib/ ../typed-racket/typed-racket-doc/ ../typed-racket/typed-racket-more/ ../typed-racket/typed-racket-compatibility/ ../typed-racket/typed-racket-test/ ../scribble/scribble-doc/ ../scribble/scribble-html-lib/ ../scribble/scribble-lib/ ../scribble/scribble-test/ ../scribble/scribble-text-lib/ ../scribble/scribble/ 
 	./racket/bin/raco pkg install ../require-typed-check
 
 
